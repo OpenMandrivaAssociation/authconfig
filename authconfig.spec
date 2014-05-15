@@ -1,5 +1,5 @@
 Summary:	Command line tool for setting up authentication from network services
-Name		authconfig
+Name:		authconfig
 Version:	6.2.5
 Release:	1
 License:	GPLv2+
