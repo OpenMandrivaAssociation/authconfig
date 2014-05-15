@@ -3,7 +3,7 @@ Name:		authconfig
 Version:	6.2.5
 Release:	1
 License:	GPLv2+
-Group:		System Environment/Base
+Group:		System/Configuration/Networking
 URL:		https://fedorahosted.org/authconfig
 Source0:	https://fedorahosted.org/releases/a/u/%{name}/%{name}-%{version}.tar.bz2
 Patch1:		authconfig-6.2.5-lastlog-gdm.patch
