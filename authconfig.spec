@@ -1,3 +1,5 @@
+%define _disable_ld_no_undefined 1
+
 Summary:	Command line tool for setting up authentication from network services
 Name:		authconfig
 Version:	6.2.5
