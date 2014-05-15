@@ -37,7 +37,7 @@ authentication schemes.
 
 %package gtk
 Summary:	Graphical tool for setting up authentication from network services
-Group:		System Environment/Base
+Group:		System/Configuration/Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	pygtk2-libglade >= 2.14.0
 
