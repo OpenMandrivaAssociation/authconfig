@@ -39,7 +39,7 @@ authentication schemes.
 Summary:	Graphical tool for setting up authentication from network services
 Group:		System/Configuration/Networking
 Requires:	%{name} = %{version}-%{release}
-Requires:	pygtk2-libglade >= 2.14.0
+Requires:	pygtk2.0-libglade >= 2.14.0
 
 %description gtk
 Authconfig-gtk is a GUI program which can configure a workstation
