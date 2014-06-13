@@ -3,7 +3,7 @@
 Summary:	Command line tool for setting up authentication from network services
 Name:		authconfig
 Version:	6.2.5
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		System/Configuration/Networking
 URL:		https://fedorahosted.org/authconfig
