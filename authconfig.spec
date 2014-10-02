@@ -22,7 +22,7 @@ Conflicts:	freeipa-client < 2.2.0
 Conflicts:	ipa-client < 2.2.0
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	python >= 2.6
-BuildRequires:	python-devel
+BuildRequires:	python2-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	intltool
 BuildRequires:	gettext
