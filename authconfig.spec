@@ -2,17 +2,17 @@
 
 Summary:	Command line tool for setting up authentication from network services
 Name:		authconfig
-Version:	6.2.5
-Release:	3
+Version:	6.2.9
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration/Networking
 URL:		https://fedorahosted.org/authconfig
 Source0:	https://fedorahosted.org/releases/a/u/%{name}/%{name}-%{version}.tar.bz2
-Patch1:		authconfig-6.2.5-lastlog-gdm.patch
-Requires:	newt-python
+Patch1:		authconfig-6.2.6-gdm-nolastlog.patch
+Requires:	newt
 Requires:	pam >= 0.99.10.0
-Requires:	python
-Requires:	libpwquality > 0.9
+Requires:	python2
+Requires:	pwquality > 0.9
 Conflicts:	pam_krb5 < 1.49
 Conflicts:	samba-common < 3.0
 Conflicts:	samba-client < 3.0
@@ -50,15 +50,14 @@ authentication schemes.
 %prep
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .gdm
+sed -i 's/python \-c/python2 \-c/g' configure authconfig.py authconfig-gtk.py
 
 %build
-%configure2_5x
+%configure2_5x --with-pythonrev=%{py2_ver}
 %make
 
 %install
 %makeinstall_std
-rm $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/acutilmodule.a
-rm $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/acutilmodule.la
 rm $RPM_BUILD_ROOT/%{_datadir}/%{name}/authconfig-tui.py
 ln -s authconfig.py $RPM_BUILD_ROOT/%{_datadir}/%{name}/authconfig-tui.py
 
