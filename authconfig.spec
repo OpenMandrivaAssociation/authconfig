@@ -2,8 +2,8 @@
 
 Summary:	Command line tool for setting up authentication from network services
 Name:		authconfig
-Version:	6.2.9
-Release:	2
+Version:	6.2.10
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration/Networking
 URL:		https://fedorahosted.org/authconfig
@@ -11,7 +11,7 @@ Source0:	https://fedorahosted.org/releases/a/u/%{name}/%{name}-%{version}.tar.bz
 Patch1:		authconfig-6.2.6-gdm-nolastlog.patch
 Requires:	newt
 Requires:	pam >= 0.99.10.0
-Requires:	python2
+Requires:	python
 Requires:	pwquality > 0.9
 Conflicts:	pam_krb5 < 1.49
 Conflicts:	samba-common < 3.0
@@ -21,8 +21,7 @@ Conflicts:	sssd < 0.99.1
 Conflicts:	freeipa-client < 2.2.0
 Conflicts:	ipa-client < 2.2.0
 BuildRequires:	pkgconfig(glib-2.0)
-BuildRequires:	python >= 2.6
-BuildRequires:	python2-devel
+BuildRequires:	pkgconfig(python)
 BuildRequires:	desktop-file-utils
 BuildRequires:	intltool
 BuildRequires:	gettext
@@ -50,19 +49,18 @@ authentication schemes.
 %prep
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .gdm
-sed -i 's/python \-c/python2 \-c/g' configure authconfig.py authconfig-gtk.py
 
 %build
-%configure2_5x --with-pythonrev=%{py2_ver}
+%configure --with-python-rev=3
 %make
 
 %install
 %makeinstall_std
-rm $RPM_BUILD_ROOT/%{_datadir}/%{name}/authconfig-tui.py
-ln -s authconfig.py $RPM_BUILD_ROOT/%{_datadir}/%{name}/authconfig-tui.py
+rm %{buildroot}%{_datadir}/%{name}/authconfig-tui.py
+ln -s authconfig.py %{buildroot}%{_datadir}/%{name}/authconfig-tui.py
 
 %find_lang %{name}
-find $RPM_BUILD_ROOT%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
+find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
 
 
 %triggerin -- authconfig <= 5.4.9
