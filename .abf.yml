@@ -1,4 +1,3 @@
-removed_sources:
-  authconfig-6.2.5.tar.bz2: 6c844c93cddda3e106393e1da23405ebc5328459
+---
 sources:
-  authconfig-6.2.9.tar.bz2: 9efff9f46413028902407fc93d88c1f973d187f0
+  authconfig-6.2.10.tar.bz2: 81a54efd28cf1fd4831cb56536d657cb9f2f86a0
