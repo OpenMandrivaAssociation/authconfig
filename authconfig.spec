@@ -81,7 +81,7 @@ authconfig --update --nostart >/dev/null 2>&1 || :
 %exclude %{_mandir}/man8/authconfig-gtk.*
 %{_mandir}/man8/*
 %{_mandir}/man5/*
-%{_libdir}/python*/site-packages/acutilmodule.so
+%{_libdir}/python*/site-packages/acutil.so
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/authconfig.py*
 %{_datadir}/%{name}/authconfig-tui.py*
