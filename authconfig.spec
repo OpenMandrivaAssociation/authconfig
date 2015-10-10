@@ -21,7 +21,7 @@ Conflicts:	sssd < 0.99.1
 Conflicts:	freeipa-client < 2.2.0
 Conflicts:	ipa-client < 2.2.0
 BuildRequires:	pkgconfig(glib-2.0)
-BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(python3)
 BuildRequires:	desktop-file-utils
 BuildRequires:	intltool
 BuildRequires:	gettext
