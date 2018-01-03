@@ -1,0 +1,136 @@
+diff -up authconfig-7.0.1/authinfo.py.nss-update authconfig-7.0.1/authinfo.py
+--- authconfig-7.0.1/authinfo.py.nss-update	2017-05-16 14:55:45.294736031 +0200
++++ authconfig-7.0.1/authinfo.py	2017-07-20 11:34:11.332143359 +0200
+@@ -93,9 +93,7 @@ PATH_SEBOOL = "/usr/sbin/setsebool"
+ PATH_SCEVENTD = "/usr/bin/pkcs11_eventmgr"
+ PATH_SCSETUP = "/usr/bin/pkcs11_setup"
+ 
+-PATH_LIBNSS_LDAP = "/usr" + LIBDIR + "/libnss_ldap.so.2"
+-if not os.path.isfile(PATH_LIBNSS_LDAP):
+-	PATH_LIBNSS_LDAP = LIBDIR + "/libnss_ldap.so.2"
++PATH_LIBNSS_LDAP = LIBDIR + "/libnss_ldap.so.2"
+ PATH_LIBNSS_NIS = LIBDIR + "/libnss_nis.so.2"
+ PATH_LIBNSS_WINBIND = LIBDIR + "/libnss_winbind.so.2"
+ PATH_LIBNSS_SSS = LIBDIR + "/libnss_sss.so.2"
+@@ -107,7 +105,7 @@ PATH_PAM_PKCS11 = AUTH_MODULE_DIR + "/pa
+ PATH_PAM_FPRINTD = AUTH_MODULE_DIR + "/pam_fprintd.so"
+ PATH_PAM_SSS = AUTH_MODULE_DIR + "/pam_sss.so"
+ 
+-PATH_LIBSSS_AUTOFS = "/usr" + LIBDIR + "/sssd/modules/libsss_autofs.so"
++PATH_LIBSSS_AUTOFS = LIBDIR + "/sssd/modules/libsss_autofs.so"
+ 
+ PATH_WINBIND_NET = "/usr/bin/net"
+ 
+@@ -213,10 +211,10 @@ def checkNSS(configuration, candidate):
+ 		start = configuration.find(candidate, start)
+ 		if start < 0:
+ 			return None
+-		if start > 0 and configuration[start-1].isalnum():
++		if start > 0 and not configuration[start-1].isspace():
+ 			start += clen
+ 			continue
+-		if start+clen < len(configuration) and configuration[start+clen].isalnum():
++		if start+clen < len(configuration) and not configuration[start+clen].isspace():
+ 			start += clen
+ 			continue
+ 		return start
+@@ -1293,10 +1291,12 @@ class AuthInfo:
+ 		self.enableMDNS = None
+ 		self.enableMyhostname = None
+ 		self.preferDNSinHosts = None
++		self.preferSSSinNsswitch = True
+ 		self.enableSSSD = None
+-                # This one we don't have a config entry, we just
++                # For these we don't have a config entry, we just
+                 # preserve the entry if we see it.
+ 		self.enableAltfiles = None
++		self.enableSystemd = None
+ 
+ 		# Authentication setup.
+ 		self.enableNullOk = True
+@@ -1394,8 +1394,9 @@ class AuthInfo:
+ 		("winbindSeparator", "c"), ("winbindTemplateHomedir", "c"), ("winbindTemplateShell", "c"),
+ 		("winbindUseDefaultDomain", "b"), ("winbindOffline", "b"), ("winbindKrb5", "b")]),
+ 	SaveGroup(self.writeNSS, None, [("enableWinbind", "b"), ("enableNIS", "b"), ("enableNIS3", "b"),
+-		("enableLDAP", "b"), ("enableMDNS", "b"), ("enableMyhostname", "b"),
+-		("enableSSSD", "b"), ("preferDNSinHosts", "b"), ("implicitSSSD", "b")]),
++		("enableLDAP", "b"), ("enableMDNS", "b"), ("enableMyhostname", "b"), ("enableSystemd", "b"),
++		("enableAltfiles", "b"), ("enableSSSD", "b"), ("preferDNSinHosts", "b"), ("implicitSSSD", "b"),
++		("preferSSSinNsswitch", "b")]),
+ 	SaveGroup(self.writePAM, None, [("pwqualityArgs", "c"), ("passwdqcArgs", "c"),
+ 		("faillockArgs", "c"), ("enableFaillock", "b"),
+ 		("localuserArgs", "c"), ("pamAccessArgs", "c"), ("enablePAMAccess", "b"),
+@@ -1984,9 +1985,9 @@ class AuthInfo:
+ 				# some modules can be found in hosts only
+ 				value = matchKey(line, "hosts:")
+ 				if value:
+-					if checkNSS(value, "mdns4_minimal [NOTFOUND=return]"):
++					if checkNSS(value, "mdns4_minimal [NOTFOUND=return]") != None:
+ 						self.setParam("enableMDNS", True, ref)
+-					if checkNSS(value, "myhostname"):
++					if checkNSS(value, "myhostname") != None:
+ 						self.setParam("enableMyhostname", True, ref)
+ 
+ 					nispos = checkNSS(value, "nis")
+@@ -1996,12 +1997,14 @@ class AuthInfo:
+ 
+ 		if nssconfig:
+ 			nssmap = (('LDAP', 'ldap'), ('NIS', 'nis'), ('Altfiles', 'altfiles'),
+-				('NIS3', 'nisplus'), ('Winbind', 'winbind'))
++				('NIS3', 'nisplus'), ('Winbind', 'winbind'), ('Systemd', 'systemd'))
+ 			for attr, nssentry in nssmap:
+-				if checkNSS(nssconfig, nssentry):
++				if checkNSS(nssconfig, nssentry) != None:
+ 					self.setParam('enable' + attr, True, ref)
+-
+-			self.setParam("implicitSSSD", bool(checkNSS(nssconfig, "sss")), ref)
++			ssspos = checkNSS(nssconfig, "sss")
++			self.setParam("implicitSSSD", ssspos != None, ref)
++			if ssspos != None:
++				self.setParam("preferSSSinNsswitch", ssspos == 0, ref)
+ 		f.close()
+ 		return True
+ 
+@@ -3504,8 +3507,12 @@ class AuthInfo:
+ 			if self.enableNIS:
+ 				normal += " nis"
+ 			if self.enableSSSD or self.implicitSSSD:
+-				normal += " sss"
+-				services += " sss"
++				if self.preferSSSinNsswitch:
++					normal = "sss " + normal
++					services = "sss " + services
++				else:
++					normal += " sss"
++					services += " sss"
+ 			if self.enableLDAP and not self.implicitSSSD:
+ 				normal += " ldap"
+ 
+@@ -3516,6 +3523,9 @@ class AuthInfo:
+ 			users = normal
+ 			if self.enableWinbind:
+ 				users += " winbind"
++			shadow = normal
++			if self.enableSystemd:
++				users += " systemd"
+ 
+ 			# Adjust automount from normal.
+ 			automount = normal
+@@ -3558,7 +3568,7 @@ class AuthInfo:
+ 				elif matchLine(ls, "shadow:"):
+ 					if not wroteshadow:
+ 						output += "shadow:    "
+-						output += users
++						output += shadow
+ 						output += "\n"
+ 						wroteshadow = True
+ 				# If it's a 'group' line, insert ours instead.
+@@ -3613,7 +3623,7 @@ class AuthInfo:
+ 				output += "\n"
+ 			if not wroteshadow:
+ 				output += "shadow:    "
+-				output += users
++				output += shadow
+ 				output += "\n"
+ 			if not wrotegroup:
+ 				output += "group:     "
