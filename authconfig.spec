@@ -28,23 +28,12 @@ BuildRequires:	intltool
 BuildRequires:	gettext
 BuildRequires:	perl-XML-Parser
 Requires:	/usr/bin/openssl
+%rename %{name}-gtk
 
 %description 
 Authconfig is a command line utility which can configure a workstation
 to use shadow (more secure) passwords.  Authconfig can also configure a
 system to be a client for certain networked user information and
-authentication schemes.
-
-%package gtk
-Summary:	Graphical tool for setting up authentication from network services
-Group:		System/Configuration/Networking
-Requires:	%{name} = %{EVRD}
-Requires:	pygtk2.0-libglade >= 2.14.0
-
-%description gtk
-Authconfig-gtk is a GUI program which can configure a workstation
-to use shadow (more secure) passwords.  Authconfig-gtk can also configure
-a system to be a client for certain networked user information and
 authentication schemes.
 
 %prep
@@ -74,44 +63,12 @@ authconfig --update --nostart >/dev/null 2>&1 || :
 %ghost %config(noreplace) %{_sysconfdir}/pam.d/postlogin-ac
 %{_sbindir}/cacertdir_rehash
 %{_sbindir}/authconfig
-%{_sbindir}/authconfig-tui
-%exclude %{_mandir}/man8/system-config-authentication.*
-%exclude %{_mandir}/man8/authconfig-gtk.*
 %{_mandir}/man8/*
 %{_mandir}/man5/*
 %{_libdir}/python*/site-packages/acutil.so
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/authconfig.py*
-%{_datadir}/%{name}/authconfig-tui.py*
 %{_datadir}/%{name}/authinfo.py*
 %{_datadir}/%{name}/shvfile.py*
 %{_datadir}/%{name}/dnsclient.py*
-%{_datadir}/%{name}/msgarea.py*
 %attr(700,root,root) %dir %{_localstatedir}/lib/%{name}
-
-%files gtk
-%{_bindir}/authconfig
-%{_bindir}/authconfig-tui
-%{_bindir}/authconfig-gtk
-%{_bindir}/system-config-authentication
-%{_sbindir}/authconfig-gtk
-%{_sbindir}/system-config-authentication
-%{_mandir}/man8/system-config-authentication.*
-%{_mandir}/man8/authconfig-gtk.*
-%{_datadir}/%{name}/authconfig.glade
-%{_datadir}/%{name}/authconfig-gtk.py*
-%config(noreplace) %{_sysconfdir}/pam.d/authconfig-gtk
-%config(noreplace) %{_sysconfdir}/pam.d/system-config-authentication
-%config(noreplace) %{_sysconfdir}/security/console.apps/authconfig-gtk
-%config(noreplace) %{_sysconfdir}/security/console.apps/system-config-authentication
-%config(noreplace) %{_sysconfdir}/pam.d/authconfig
-%config(noreplace) %{_sysconfdir}/pam.d/authconfig-tui
-%config(noreplace) %{_sysconfdir}/security/console.apps/authconfig
-%config(noreplace) %{_sysconfdir}/security/console.apps/authconfig-tui
-%{_datadir}/applications/*
-%{_datadir}/icons/hicolor/16x16/apps/system-config-authentication.*
-%{_datadir}/icons/hicolor/22x22/apps/system-config-authentication.*
-%{_datadir}/icons/hicolor/24x24/apps/system-config-authentication.*
-%{_datadir}/icons/hicolor/32x32/apps/system-config-authentication.*
-%{_datadir}/icons/hicolor/48x48/apps/system-config-authentication.*
-%{_datadir}/icons/hicolor/256x256/apps/system-config-authentication.*
