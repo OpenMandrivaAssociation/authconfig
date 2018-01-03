@@ -49,7 +49,7 @@ authentication schemes.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch1 -p1 -b .gdm
+%apply_patches
 
 %build
 %configure --with-python-rev=3
@@ -57,9 +57,6 @@ authentication schemes.
 
 %install
 %makeinstall_std
-
-rm %{buildroot}%{_libdir}/python*/site-packages/acutil.a
-rm %{buildroot}%{_libdir}/python*/site-packages/acutil.la
 
 %find_lang %{name}
 find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
