@@ -54,7 +54,7 @@ find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
 authconfig --update --nostart >/dev/null 2>&1 || :
 
 %files -f %{name}.lang
-%doc COPYING NOTES TODO README.samba3
+%doc COPYING NOTES TODO
 %ghost %config(noreplace) %{_sysconfdir}/sysconfig/authconfig
 %ghost %config(noreplace) %{_sysconfdir}/pam.d/system-auth-ac
 %ghost %config(noreplace) %{_sysconfdir}/pam.d/password-auth-ac
