@@ -38,7 +38,7 @@ authentication schemes.
 %package gtk
 Summary:	Graphical tool for setting up authentication from network services
 Group:		System/Configuration/Networking
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{EVRD}
 Requires:	pygtk2.0-libglade >= 2.14.0
 
 %description gtk
@@ -57,12 +57,12 @@ authentication schemes.
 
 %install
 %makeinstall_std
-rm %{buildroot}%{_datadir}/%{name}/authconfig-tui.py
-ln -s authconfig.py %{buildroot}%{_datadir}/%{name}/authconfig-tui.py
+
+rm %{buildroot}%{_libdir}/python*/site-packages/acutil.a
+rm %{buildroot}%{_libdir}/python*/site-packages/acutil.la
 
 %find_lang %{name}
 find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
-
 
 %triggerin -- authconfig <= 5.4.9
 authconfig --update --nostart >/dev/null 2>&1 || :
