@@ -2,13 +2,14 @@
 
 Summary:	Command line tool for setting up authentication from network services
 Name:		authconfig
-Version:	6.2.10
-Release:	3
+Version:	7.0.1
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration/Networking
-URL:		https://fedorahosted.org/authconfig
-Source0:	https://fedorahosted.org/releases/a/u/%{name}/%{name}-%{version}.tar.bz2
+URL:		https://pagure.io/authconfig
+Source0:	https://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
 Patch1:		authconfig-6.2.6-gdm-nolastlog.patch
+Patch2:		authconfig-7.0.1-nss-update.patch
 Requires:	newt
 Requires:	pam >= 0.99.10.0
 Requires:	python
@@ -117,4 +118,3 @@ authconfig --update --nostart >/dev/null 2>&1 || :
 %{_datadir}/icons/hicolor/32x32/apps/system-config-authentication.*
 %{_datadir}/icons/hicolor/48x48/apps/system-config-authentication.*
 %{_datadir}/icons/hicolor/256x256/apps/system-config-authentication.*
-
