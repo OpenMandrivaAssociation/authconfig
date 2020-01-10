@@ -38,7 +38,7 @@ authentication schemes.
 
 %prep
 %setup -q -n %{name}-%{version}
-%apply_patches
+%autopatch -p1
 
 %build
 %configure --with-python-rev=3
