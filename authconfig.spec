@@ -21,6 +21,11 @@ Conflicts:	nss_ldap < 254
 Conflicts:	sssd < 0.99.1
 Conflicts:	freeipa-client < 2.2.0
 Conflicts:	ipa-client < 2.2.0
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	desktop-file-utils
