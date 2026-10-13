@@ -47,15 +47,12 @@ authentication schemes.
 
 %build
 %configure --with-python-rev=3
-%make
+# slibtoolize installs an ltmain.sh stub, so ./libtool never writes acutil.so.
+%make_build LIBTOOL=slibtool-shared
 
 %install
-%makeinstall_std
-# automake installs this module only when acutil.la is present. The libtool
-# driver used here links .libs/acutil.so and skips that install.
-mod=$(find . -name acutil.so -type f | head -1)
-test -n "$mod"
-install -D -m755 "$mod" %{buildroot}%{python_sitearch}/acutil.so
+%make_install LIBTOOL=slibtool-shared
+test -f %{buildroot}%{python_sitearch}/acutil.so
 
 %find_lang %{name}
 find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
