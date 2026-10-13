@@ -51,6 +51,11 @@ authentication schemes.
 
 %install
 %makeinstall_std
+# automake installs this module only when acutil.la is present. The libtool
+# driver used here links .libs/acutil.so and skips that install.
+mod=$(find . -name acutil.so -type f | head -1)
+test -n "$mod"
+install -D -m755 "$mod" %{buildroot}%{python_sitearch}/acutil.so
 
 %find_lang %{name}
 find %{buildroot}%{_datadir} -name "*.mo" | xargs ./utf8ify-mo
@@ -70,7 +75,7 @@ authconfig --update --nostart >/dev/null 2>&1 || :
 %{_sbindir}/authconfig
 %{_mandir}/man8/*
 %{_mandir}/man5/*
-%{_libdir}/python*/site-packages/acutil.so
+%{python_sitearch}/acutil.so
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/authconfig.py*
 %{_datadir}/%{name}/authinfo.py*
